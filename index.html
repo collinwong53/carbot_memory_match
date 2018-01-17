@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+    <title>Carbot Memory Match</title>
+    <link href='https://fonts.googleapis.com/css?family=Bungee' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/5cf9943ac5.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header id="header_container">
+        <h1>Carbot Memory Match</h1>
+    </header>
+    <div id="stats_container">
+        <div class="games_played">
+            <div class="label">Games Played:</div>
+            <div class="value">0</div>
+        </div>
+        <div class="attempts">
+            <div class="label">Attempts Left:</div>
+            <div class="value">18</div>
+        </div>
+        <div class="accuracy">
+            <div class="label">Accuracy:</div>
+            <div class="value">0</div>
+        </div>
+        <div id="side_buttons">
+            <button id="reset_side" class="reset" disabled>Reset Game</button>
+            <div id="mute_side" class="mute_button">
+                <i class="sound_on fa fa-volume-up" aria-hidden="true"></i>
+                <i class="sound_off hidden fa fa-volume-off"></i>
+            </div>
+        </div>
+    </div>
+    <div id="modal_body"></div>
+    <div class="game_area">
+    </div>
+    <div id="bottom_container">
+        <div id="mute_bottom" class="mute_button">
+            <i class="hidden sound_off fa fa-volume-off" aria-hidden="true"></i>
+            <i class="sound_on fa fa-volume-up" aria-hidden="true"></i>
+        </div>
+        <button id="reset_bottom" class="reset" disabled>Reset Game</button>
+    </div>
+</body>
+
+</html>
