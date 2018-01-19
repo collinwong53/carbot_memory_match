@@ -34,9 +34,9 @@ function initialize() {
     view = new View();
     carBot = new Memory_match(image_array, sound_object);
     view.start_app();
-    // setTimeout(function(){
+    setTimeout(function(){
         carBot.start_app();
-    // },1000)
+    },1000)
     $(window).on('resize', view.change_card_height);
     $(window).on('load', view.change_card_height);
 }
