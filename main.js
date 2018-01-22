@@ -37,7 +37,9 @@ function initialize() {
             images[i] = new Image()
             images[i].src = image_array[i];
         }
-        carBot.start_app();
+        setTimeout(function(){
+            carBot.start_app();
+        },1000);
     }
     preload(image_array);
     $(window).on('resize', view.change_card_height);
