@@ -129,6 +129,8 @@ function Memory_match(images, sounds) {
             card.addClass('flipped');
             self.second_card_clicked = card;
             if (self.second_card_clicked.find('img').attr('src') === self.first_card_clicked.find('img').attr('src')) {
+                self.first_card_clicked.find('.back').css('display','none');
+                self.second_card_clicked.find('.back').css('display','none');
                 var image = self.second_card_clicked.find('img').attr('src');
                 if (!self.is_muted) {
                     self.sounds[image].play();
