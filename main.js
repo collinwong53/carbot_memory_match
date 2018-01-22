@@ -14,9 +14,6 @@ function initialize() {
         'images/zergling.jpg',
         'images/ultralisk.jpg',
     ];
-    for(var image in image_array){
-        let load = image_array.image;
-    }
     var sound_object = {
         'images/zeratul.jpg': new Audio("sounds/zeratul_goodjob.mp3"),
         'images/banelings.jpg': new Audio("sounds/baneling_roll.mp3"),
@@ -34,9 +31,15 @@ function initialize() {
     view = new View();
     carBot = new Memory_match(image_array, sound_object);
     view.start_app();
-    setTimeout(function(){
+    var images = [];
+    function preload(image_array) {
+        for (i = 0; i < image_array.length; i++) {
+            images[i] = new Image()
+            images[i].src = image_array[i];
+        }
         carBot.start_app();
-    },1000)
+    }
+    preload(image_array);
     $(window).on('resize', view.change_card_height);
     $(window).on('load', view.change_card_height);
 }
