@@ -37,7 +37,9 @@ function initialize() {
             images[i] = new Image()
             images[i].src = image_array[i];
         }
-        carBot.start_app();
+        setTimeout(function(){
+            carBot.start_app();
+        },1000);
     }
     preload(image_array);
     $(window).on('resize', view.change_card_height);
@@ -132,6 +134,8 @@ function Memory_match(images, sounds) {
             card.addClass('flipped');
             self.second_card_clicked = card;
             if (self.second_card_clicked.find('img').attr('src') === self.first_card_clicked.find('img').attr('src')) {
+                self.first_card_clicked.find('.back').css('display','none');
+                self.second_card_clicked.find('.back').css('display','none');
                 var image = self.second_card_clicked.find('img').attr('src');
                 if (!self.is_muted) {
                     self.sounds[image].play();
