@@ -32,14 +32,15 @@ function initialize() {
     carBot = new Memory_match(image_array, sound_object);
     view.start_app();
     var images = [];
+
     function preload(image_array) {
         for (i = 0; i < image_array.length; i++) {
             images[i] = new Image()
             images[i].src = image_array[i];
         }
-        setTimeout(function(){
+        setTimeout(function () {
             carBot.start_app();
-        },1000);
+        }.bind(this), 1000);
     }
     preload(image_array);
     $(window).on('resize', view.change_card_height);
@@ -47,7 +48,7 @@ function initialize() {
 }
 
 function View() {
-    const self = this;
+    // const self = this;
     this.mute = function () {
         $('.sound_off, .sound_on').toggleClass('hidden');
         if (!carBot.is_muted) {
@@ -56,12 +57,12 @@ function View() {
             }
         }
         carBot.is_muted = !carBot.is_muted;
-    }
+    }.bind(this);
     this.start_app = function () {
-        self.apply_click_handlers();
+        this.apply_click_handlers();
     }
     this.apply_click_handlers = function () {
-        $('.mute_button').click(self.mute);
+        $('.mute_button').click(this.mute);
     }
     this.change_card_height = function () {
         let image_height = $('.back img').css('height');
@@ -80,8 +81,8 @@ function View() {
         let images = image_array.concat(image_array);
         //randomly sort the images
         let random_images = this.random_sort(images);
-        for(let i = 1; i<4; i++){
-            $('<div>').addClass('card_row').attr('id', 'row'+i).appendTo('.game_area');
+        for (let i = 1; i < 4; i++) {
+            $('<div>').addClass('card_row').attr('id', 'row' + i).appendTo('.game_area');
         }
         for (let i = 0; i < random_images.length; i++) {
             let image = random_images[i];
@@ -113,97 +114,97 @@ function Memory_match(images, sounds) {
     this.first_card_clicked = null;
     this.second_card_clicked = null;
     this.reset_stats = function () {
-        self.matches = 0;
-        self.attempts = 18;
+        this.matches = 0;
+        this.attempts = 18;
         $('.attempts').css('color', 'white');
-        self.accuracy = 0;
+        this.accuracy = 0;
         $('.accuracy').find(".value").text(0);
     }
     this.card_clicked = function () {
-        const card = $(this);
+        const card = $(event.target).parents('.card');
         const face = card.find('.front').hasClass('hidden');
-        if (self.lock || face) {
+        if (this.lock || face) {
             return;
         } //end lock check;
-        if (self.first_card_clicked === null) {
+        if (this.first_card_clicked === null) {
             card.addClass('flipped');
-            self.first_card_clicked = card;
+            this.first_card_clicked = card;
         } //end first card check
-        else if (self.first_card_clicked.attr('id') !== card.attr('id')) {
-            self.attempts--;
+        else if (this.first_card_clicked.attr('id') !== card.attr('id')) {
+            this.attempts--;
             card.addClass('flipped');
-            self.second_card_clicked = card;
-            if (self.second_card_clicked.find('img').attr('src') === self.first_card_clicked.find('img').attr('src')) {
-                self.first_card_clicked.find('.back').css('display','none');
-                self.second_card_clicked.find('.back').css('display','none');
-                var image = self.second_card_clicked.find('img').attr('src');
-                if (!self.is_muted) {
-                    self.sounds[image].play();
+            this.second_card_clicked = card;
+            if (this.second_card_clicked.find('img').attr('src') === this.first_card_clicked.find('img').attr('src')) {
+                this.first_card_clicked.find('.back').css('display', 'none');
+                this.second_card_clicked.find('.back').css('display', 'none');
+                var image = this.second_card_clicked.find('img').attr('src');
+                if (!this.is_muted) {
+                    this.sounds[image].play();
                 }
-                self.lock = true;
-                self.toggle_disabled_reset();
-                self.reset_lock = true;
-                self.matches++;
-                self.display_accuracy();
-                self.check_win();
+                this.lock = true;
+                this.toggle_disabled_reset();
+                this.reset_lock = true;
+                this.matches++;
+                this.display_accuracy();
+                this.check_win();
             } //end if match
             else {
-                if (self.attempts === 0) {
-                    self.display_gg();
+                if (this.attempts === 0) {
+                    this.display_gg();
                     setTimeout(function () {
-                        self.reset_lock = false
-                        self.toggle_disabled_reset();
-                    }, 1000);
+                        this.reset_lock = false
+                        this.toggle_disabled_reset();
+                    }.bind(this), 1000);
                 } else {
-                    self.reset_lock = true;
-                    self.toggle_disabled_reset();
-                    setTimeout(self.reset_cards, 1000);
+                    this.reset_lock = true;
+                    this.toggle_disabled_reset();
+                    setTimeout(this.reset_cards, 1000);
                 } //end if too many attempts
-                self.display_accuracy();
-                self.lock = true;
+                this.display_accuracy();
+                this.lock = true;
             } //end else if no match
         } //end second card check
-        self.display_stats();
-    } //end cards clicked
+        this.display_stats();
+    }.bind(this); //end cards clicked
     this.check_win = function () {
         if (this.attempts === 0 && this.matches !== 9) {
-            self.display_gg();
-            self.lock = true;
-            self.reset_lock = true
+            this.display_gg();
+            this.lock = true;
+            this.reset_lock = true
             setTimeout(this.lock_delay, 1000);
         } //end if
         else {
-            self.lock = true;
-            self.reset_lock = true;
-            $(self.first_card_clicked).find('.front').fadeOut(1500);
-            $(self.second_card_clicked).find('.front').fadeOut(1500);
-            setTimeout(self.reset_cards, 1000);
+            this.lock = true;
+            this.reset_lock = true;
+            $(this.first_card_clicked).find('.front').fadeOut(1500);
+            $(this.second_card_clicked).find('.front').fadeOut(1500);
+            setTimeout(this.reset_cards, 1000);
             self.pair = true;
-            if (self.matches === 9 && this.accuracy < 60) {
+            if (this.matches === 9 && this.accuracy < 60) {
                 $("#modal_body").css("background-image", "url(images/balllicking.gif)");
                 $("#modal_body").css("display", "block");
-                if (!self.is_muted) {
-                    self.sounds["zerg_lick"].play();
+                if (!this.is_muted) {
+                    this.sounds["zerg_lick"].play();
                 }
             } //end if
             else if (this.matches === 9) {
                 $('#modal_body').css("display", "block");
-                if (!self.is_muted) {
-                    self.sounds['clap'].play();
+                if (!this.is_muted) {
+                    this.sounds['clap'].play();
                 }
             } //end else if
         } //end else
         return;
     } //end check win
     this.apply_click_handlers = function () {
-        $('.card').click(self.card_clicked);
+        $('.card').click(this.card_clicked);
         $('.card').hover(function () {
             if (!$(this).find('.front').hasClass('hidden')) {
                 $(this).toggleClass("glow");
             }
-        })
+        });
         $('#modal_body').click(function () {
-            self.reset_button();
+            this.reset_button();
         })
         $('.reset').hover(function () {
                 if (!$('.reset').attr('disabled')) {
@@ -216,12 +217,12 @@ function Memory_match(images, sounds) {
         );
     } //end add click handlers
     this.display_stats = function () {
-        $('.games_played').find('.value').text(self.games_played);
-        $('.attempts').find('.value').text(self.attempts);
-        if (self.attempts === 10) {
+        $('.games_played').find('.value').text(this.games_played);
+        $('.attempts').find('.value').text(this.attempts);
+        if (this.attempts === 10) {
             $('.attempts').css('color', 'yellow');
         }
-        if (self.attempts === 5) {
+        if (this.attempts === 5) {
             $('.attempts').css('color', 'red');
         }
     } //end display stats
@@ -230,51 +231,51 @@ function Memory_match(images, sounds) {
         this.apply_click_handlers();
         $('.reset').click(this.reset_button);
         $('.card').addClass('flipped');
-        self.lock = true;
-        self.reset_lock = true;
+        this.lock = true;
+        this.reset_lock = true;
         $('.reset')
         $('#modal_body').css('background-image', 'url(images/clapping_zerg.gif)');
         setTimeout(this.start_match, 2000);
-        setTimeout(self.lock_delay, 3000);
+        setTimeout(this.lock_delay, 3000);
     } //end start app
     this.start_match = function () {
         $('.card').removeClass('flipped');
         view.change_card_height();
-    }
+    }.bind(this);
     this.lock_delay = function () {
-        self.lock = false;
-        self.reset_lock = false;
-        self.toggle_disabled_reset();
-    }
+        this.lock = false;
+        this.reset_lock = false;
+        this.toggle_disabled_reset();
+    }.bind(this);
     this.display_gg = function () {
         $('#modal_body').css("background-image", "url(images/GG.gif)");
         $("#modal_body").css("display", "block");
-        if (!self.is_muted) {
+        if (!this.is_muted) {
             sounds['rage'].play();
         }
     } //end display gg
     this.reset_button = function () {
-        if (self.reset_lock === true) {
+        if (this.reset_lock === true) {
             return;
         } //end if
-        self.first_card_clicked = null;
-        self.second_card_clicked = null;
-        self.reset_stats();
-        self.display_stats();
-        self.toggle_disabled_reset();
-        self.games_played++;
+        this.first_card_clicked = null;
+        this.second_card_clicked = null;
+        this.reset_stats();
+        this.display_stats();
+        this.toggle_disabled_reset();
+        this.games_played++;
         $('.back').removeAttr('id');
         $('.front').removeAttr('id');
         $('.game_area').html('');
         $('#modal_body').css('display', 'none');
-        self.start_app();
+        this.start_app();
         view.change_card_height();
-    } //end reset button
+    }.bind(this) //end reset button
     this.reset_cards = function () {
-        self.display_stats();
+        this.display_stats();
         let card_1 = self.first_card_clicked;
         let card_2 = self.second_card_clicked;
-        if (!self.pair) {
+        if (!this.pair) {
             card_1.removeClass('flipped');
             card_2.removeClass('flipped');
         } // if no pair
@@ -288,23 +289,23 @@ function Memory_match(images, sounds) {
                 card_2.removeClass("glow");
             } //disable glow
         } //add display none;
-        self.lock = false;
-        self.reset_lock = false;
-        self.toggle_disabled_reset();
-        self.first_card_clicked = null;
-        self.second_card_clicked = null;
-        self.pair = false;
-    } //end reset cards
+        this.lock = false;
+        this.reset_lock = false;
+        this.toggle_disabled_reset();
+        this.first_card_clicked = null;
+        this.second_card_clicked = null;
+        this.pair = false;
+    }.bind(this); //end reset cards
     this.display_accuracy = function () {
-        var old_accuracy = self.accuracy;
-        self.accuracy = (Math.floor(self.matches / (-(self.attempts - 18)) * 100));
-        var increment = setInterval(change_accuracy, 10);
+        let old_accuracy = this.accuracy;
+        this.accuracy = (Math.floor(this.matches / (-(this.attempts - 18)) * 100));
+        let increment = setInterval(change_accuracy.bind(this), 10);
 
         function change_accuracy() {
-            if (old_accuracy === self.accuracy) {
+            if (old_accuracy === this.accuracy) {
                 clearInterval(increment);
             } else {
-                if (old_accuracy > self.accuracy) {
+                if (old_accuracy > this.accuracy) {
                     old_accuracy--;
                     $('.accuracy').find(".value").text(old_accuracy + "%");
                 } else {
@@ -312,8 +313,8 @@ function Memory_match(images, sounds) {
                     $('.accuracy').find(".value").text(old_accuracy + "%");
                 }
             }
-        } //end else
-    } //end accuracy
+        }
+    }.bind(this) //end accuracy
     this.toggle_disabled_reset = function () {
         let reset_button = $('.reset');
         if (reset_button.attr('disabled')) {
