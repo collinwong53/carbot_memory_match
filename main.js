@@ -30,7 +30,6 @@ function initialize() {
     }
     view = new View();
     carBot = new Memory_match(image_array, sound_object);
-    view.start_app();
     var images = [];
 
     function preload(image_array) {
@@ -47,8 +46,8 @@ function initialize() {
     $(window).on('load', view.change_card_height);
 }
 
+//view object 
 function View() {
-    // const self = this;
     this.mute = function () {
         $('.sound_off, .sound_on').toggleClass('hidden');
         if (!carBot.is_muted) {
@@ -103,12 +102,7 @@ function Memory_match(images, sounds) {
     this.images = images;
     this.sounds = sounds;
     this.is_muted = false;
-    const self = this;
     this.pair = false;
-    this.matches = 0;
-    this.attempts = 18;
-    this.accuracy = 0;
-    this.games_played = 0;
     this.lock = false;
     this.reset_lock = false;
     this.first_card_clicked = null;
@@ -227,6 +221,7 @@ function Memory_match(images, sounds) {
         }
     } //end display stats
     this.start_app = function () {
+        view.start_app();
         view.create_board(images);
         this.apply_click_handlers();
         $('.reset').click(this.reset_button);
@@ -327,3 +322,10 @@ function Memory_match(images, sounds) {
         }
     }
 } //end memory_match
+
+function Modal(){
+    this.matches = 0;
+    this.attempts = 18;
+    this.accuracy = 0;
+    this.games_played = 0;
+}
