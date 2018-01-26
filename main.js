@@ -28,6 +28,7 @@ function initialize() {
         "zerg_lick": new Audio("sounds/zerg_lick.mp3"),
         "rage": new Audio('sounds/Zealot_Death.mp3')
     }
+    modal = new Modal();
     view = new View();
     carBot = new Memory_match(image_array, sound_object);
     var images = [];
@@ -47,7 +48,8 @@ function initialize() {
 }
 
 //view object 
-function View() {
+function View(images) {
+    this.image_array = images;
     this.mute = function () {
         $('.sound_off, .sound_on').toggleClass('hidden');
         if (!carBot.is_muted) {
@@ -62,6 +64,24 @@ function View() {
     }
     this.apply_click_handlers = function () {
         $('.mute_button').click(this.mute);
+        $('.card').click(this.card_clicked);
+        $('.card').hover(function () {
+            if (!$(this).find('.front').hasClass('hidden')) {
+                $(this).toggleClass("glow");
+            }
+        });
+        $('#modal_body').click(function () {
+            this.reset_button();
+        })
+        $('.reset').hover(function () {
+                if (!$('.reset').attr('disabled')) {
+                    $('.reset').addClass('reset_highlight');
+                }
+            }, //mouse in
+            function () {
+                $('.reset').removeClass('reset_highlight');
+            } //mouse out
+        );
     }
     this.change_card_height = function () {
         let image_height = $('.back img').css('height');
@@ -108,10 +128,10 @@ function Memory_match(images, sounds) {
     this.first_card_clicked = null;
     this.second_card_clicked = null;
     this.reset_stats = function () {
-        this.matches = 0;
-        this.attempts = 18;
+        modal.matches = 0;
+        modal.attempts = 18;
         $('.attempts').css('color', 'white');
-        this.accuracy = 0;
+        modal.accuracy = 0;
         $('.accuracy').find(".value").text(0);
     }
     this.card_clicked = function () {
@@ -190,26 +210,6 @@ function Memory_match(images, sounds) {
         } //end else
         return;
     } //end check win
-    this.apply_click_handlers = function () {
-        $('.card').click(this.card_clicked);
-        $('.card').hover(function () {
-            if (!$(this).find('.front').hasClass('hidden')) {
-                $(this).toggleClass("glow");
-            }
-        });
-        $('#modal_body').click(function () {
-            this.reset_button();
-        })
-        $('.reset').hover(function () {
-                if (!$('.reset').attr('disabled')) {
-                    $('.reset').addClass('reset_highlight');
-                }
-            }, //mouse in
-            function () {
-                $('.reset').removeClass('reset_highlight');
-            } //mouse out
-        );
-    } //end add click handlers
     this.display_stats = function () {
         $('.games_played').find('.value').text(this.games_played);
         $('.attempts').find('.value').text(this.attempts);
@@ -223,7 +223,6 @@ function Memory_match(images, sounds) {
     this.start_app = function () {
         view.start_app();
         view.create_board(images);
-        this.apply_click_handlers();
         $('.reset').click(this.reset_button);
         $('.card').addClass('flipped');
         this.lock = true;
