@@ -1,10 +1,11 @@
 $(document).ready(initialize)
-var carBot = null;
-var view = null;
+let carBot = null;
+let view = null;
+let modal = null;
 
 function initialize() {
     //front images for cards
-    var image_array = [
+    const image_array = [
         'images/banelings.jpg',
         'images/cuter_baneling.jpg',
         'images/illidan.jpg',
@@ -16,7 +17,7 @@ function initialize() {
         'images/ultralisk.jpg',
     ];
     //sound files for game
-    var sound_object = {
+    const sound_object = {
         'images/zeratul.jpg': new Audio("sounds/zeratul_goodjob.mp3"),
         'images/banelings.jpg': new Audio("sounds/baneling_roll.mp3"),
         'images/illidan.jpg': new Audio("sounds/not_prepared.mp3"),
@@ -34,8 +35,6 @@ function initialize() {
     modal = new Modal(image_array, sound_object);
     view = new View();
     controller = new Controller();
-    var images = [];
-
     //preload images
     view.preload_images(image_array);
     setTimeout(function () {
@@ -104,7 +103,7 @@ function View() {
     } //end random_sort
     this.create_board = (image_array) => {
         //double the images
-        let images = image_array.concat(image_array);
+        let images = [...image_array, ...image_array];
         //randomly sort the images
         let random_images = this.random_sort(images);
         for (let i = 1; i < 4; i++) {
