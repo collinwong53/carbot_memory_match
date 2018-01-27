@@ -67,14 +67,15 @@ function View(images) {
     this.apply_click_handlers = () => {
         $('.mute_button').click(this.mute);
         $('.card').click(controller.handle_card_clicked);
-        $('.reset').click(controller.reset_button);
+        $('.reset').click(controller.handle_reset_button);
         $('.card').hover(() => {
             if (!$(this).find('.front').hasClass('hidden')) {
                 $(this).toggleClass("glow");
             }
         });
-        $('#modal_body').click(this.reset_button);
-        $('.reset').hover(() => {
+        $('#modal_body').click(controller.handle_reset_button);
+        $('.reset').hover(
+            () => {
                 if (!$('.reset').attr('disabled')) {
                     $('.reset').addClass('reset_highlight');
                 }
@@ -135,6 +136,18 @@ function View(images) {
         }
     } //end display stats
 
+    this.flip_cards = () => {
+        $('.card').removeClass('flipped');
+        view.change_card_height();
+    };
+
+    this.display_gg = function () {
+        $('#modal_body').css("background-image", "url(images/GG.gif)");
+        $("#modal_body").css("display", "block");
+        if (!this.is_muted) {
+            sounds['rage'].play();
+        }
+    } //end display gg
 }
 
 function Controller(images, sounds) {
@@ -181,27 +194,27 @@ function Controller(images, sounds) {
                 this.toggle_disabled_reset();
                 this.reset_lock = true;
                 this.matches++;
-                this.display_accuracy();
+                view.display_accuracy();
                 this.check_win();
             } //end if match
             //no match, reset cards and check for lost
             else {
                 if (this.attempts === 0) {
                     this.display_gg();
-                    setTimeout(function () {
+                    setTimeout(() => {
                         this.reset_lock = false
                         this.toggle_disabled_reset();
-                    }.bind(this), 1000);
+                    }, 1000);
                 } else {
                     this.reset_lock = true;
                     this.toggle_disabled_reset();
                     setTimeout(this.reset_cards, 1000);
                 } //end if too many attempts
-                this.display_accuracy();
+                view.display_accuracy();
                 this.lock = true;
             } //end else if no match
         } //end second card check
-        this.display_stats();
+        view.display_stats();
     } //end cards clicked
 
     this.check_win = function () {
@@ -235,35 +248,22 @@ function Controller(images, sounds) {
         return;
     } //end check win
 
-    this.start_app = function () {
+    this.start_app = () => {
         view.start_app();
         this.lock = true;
         this.reset_lock = true;
         $('#modal_body').css('background-image', 'url(images/clapping_zerg.gif)');
-        setTimeout(this.flip_cards, 2000);
+        setTimeout(view.flip_cards, 2000);
         setTimeout(this.lock_delay, 3000);
     } //end start app
 
-    this.flip_cards = function () {
-        $('.card').removeClass('flipped');
-        view.change_card_height();
-    }.bind(this);
-
-    this.lock_delay = function () {
+    this.lock_delay = () => {
         this.lock = false;
         this.reset_lock = false;
         this.toggle_disabled_reset();
-    }.bind(this);
+    };
 
-    this.display_gg = function () {
-        $('#modal_body').css("background-image", "url(images/GG.gif)");
-        $("#modal_body").css("display", "block");
-        if (!this.is_muted) {
-            sounds['rage'].play();
-        }
-    } //end display gg
-
-    this.reset_button = function () {
+    this.handle_reset_button = () => {
         if (this.reset_lock === true) {
             return;
         } //end if
@@ -279,7 +279,7 @@ function Controller(images, sounds) {
         $('#modal_body').css('display', 'none');
         this.start_app();
         view.change_card_height();
-    }.bind(this) //end reset button
+    } //end reset button
 
     this.reset_cards = function () {
         this.display_stats();
@@ -307,12 +307,12 @@ function Controller(images, sounds) {
         this.pair = false;
     }.bind(this); //end reset cards
 
-    this.display_accuracy = function () {
-        let old_accuracy = this.accuracy;
-        this.accuracy = (Math.floor(this.matches / (-(this.attempts - 18)) * 100));
-        let increment = setInterval(change_accuracy.bind(this), 10);
+    this.display_accuracy = () => {
+        let old_accuracy = modal.accuracy;
+        this.accuracy = (Math.floor(modal.matches / (-(modal.attempts - 18)) * 100));
+        let increment = setInterval(change_accuracy, 10);
 
-        function change_accuracy() {
+        change_accuracy = () => {
             if (old_accuracy === this.accuracy) {
                 clearInterval(increment);
             } else {
@@ -325,9 +325,9 @@ function Controller(images, sounds) {
                 }
             }
         }
-    }.bind(this) //end accuracy
+    } //end accuracy
 
-    this.toggle_disabled_reset = function () {
+    this.toggle_disabled_reset = () => {
         let reset_button = $('.reset');
         if (reset_button.attr('disabled')) {
             reset_button.removeAttr('disabled');
