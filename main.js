@@ -125,7 +125,7 @@ function View(images) {
         } //end for loop
     } //end create board
 
-    this.display_stats = function (modal) {
+    this.display_stats = function () {
         $('.games_played').find('.value').text(modal.games_played);
         $('.attempts').find('.value').text(modal.attempts);
         if (modal.attempts === 10) {
@@ -148,6 +148,26 @@ function View(images) {
             sounds['rage'].play();
         }
     } //end display gg
+
+    this.display_accuracy = () => {
+        let old_accuracy = modal.accuracy;
+        this.accuracy = (Math.floor(modal.matches / (-(modal.attempts - 18)) * 100));
+        let increment = setInterval(change_accuracy, 10);
+
+        function change_accuracy() {
+            if (old_accuracy === modal.accuracy) {
+                clearInterval(increment);
+            } else {
+                if (old_accuracy > modal.accuracy) {
+                    old_accuracy--;
+                    $('.accuracy').find(".value").text(old_accuracy + "%");
+                } else {
+                    old_accuracy++;
+                    $('.accuracy').find(".value").text(old_accuracy + "%");
+                }
+            }
+        }
+    } //end accuracy
 }
 
 function Controller(images, sounds) {
@@ -179,7 +199,7 @@ function Controller(images, sounds) {
         } //end first card check
         //prevent user from clicking same card
         else if (this.first_card_clicked.attr('id') !== card.attr('id')) {
-            this.attempts--;
+            modal.attempts--;
             card.addClass('flipped');
             this.second_card_clicked = card;
             //check for match
@@ -188,19 +208,19 @@ function Controller(images, sounds) {
                 this.second_card_clicked.find('.back').css('display', 'none');
                 var image = this.second_card_clicked.find('img').attr('src');
                 if (!this.is_muted) {
-                    this.sounds[image].play();
+                    modal.sounds[image].play();
                 }
                 this.lock = true;
                 this.toggle_disabled_reset();
                 this.reset_lock = true;
-                this.matches++;
+                modal.matches++;
                 view.display_accuracy();
                 this.check_win();
             } //end if match
             //no match, reset cards and check for lost
             else {
-                if (this.attempts === 0) {
-                    this.display_gg();
+                if (modal.attempts === 0) {
+                    view.display_gg();
                     setTimeout(() => {
                         this.reset_lock = false
                         this.toggle_disabled_reset();
@@ -270,7 +290,7 @@ function Controller(images, sounds) {
         this.first_card_clicked = null;
         this.second_card_clicked = null;
         this.reset_stats();
-        this.display_stats();
+        view.display_stats();
         this.toggle_disabled_reset();
         this.games_played++;
         $('.back').removeAttr('id');
@@ -281,10 +301,10 @@ function Controller(images, sounds) {
         view.change_card_height();
     } //end reset button
 
-    this.reset_cards = function () {
-        this.display_stats();
-        let card_1 = self.first_card_clicked;
-        let card_2 = self.second_card_clicked;
+    this.reset_cards = () => {
+        view.display_stats();
+        let card_1 = this.first_card_clicked;
+        let card_2 = this.second_card_clicked;
         if (!this.pair) {
             card_1.removeClass('flipped');
             card_2.removeClass('flipped');
@@ -305,27 +325,7 @@ function Controller(images, sounds) {
         this.first_card_clicked = null;
         this.second_card_clicked = null;
         this.pair = false;
-    }.bind(this); //end reset cards
-
-    this.display_accuracy = () => {
-        let old_accuracy = modal.accuracy;
-        this.accuracy = (Math.floor(modal.matches / (-(modal.attempts - 18)) * 100));
-        let increment = setInterval(change_accuracy, 10);
-
-        change_accuracy = () => {
-            if (old_accuracy === this.accuracy) {
-                clearInterval(increment);
-            } else {
-                if (old_accuracy > this.accuracy) {
-                    old_accuracy--;
-                    $('.accuracy').find(".value").text(old_accuracy + "%");
-                } else {
-                    old_accuracy++;
-                    $('.accuracy').find(".value").text(old_accuracy + "%");
-                }
-            }
-        }
-    } //end accuracy
+    }; //end reset cards
 
     this.toggle_disabled_reset = () => {
         let reset_button = $('.reset');
