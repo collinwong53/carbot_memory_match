@@ -31,7 +31,7 @@ function initialize() {
         "rage": new Audio('sounds/Zealot_Death.mp3')
     }
     //create game objects
-    modal = new Modal(image_array,sound_object);
+    modal = new Modal(image_array, sound_object);
     view = new View();
     controller = new Controller();
     var images = [];
@@ -58,24 +58,28 @@ function View(images) {
         }
         modal.is_muted = !modal.is_muted;
     }.bind(this);
+
     this.start_app = () => {
+        this.create_board(modal.images);
         this.apply_click_handlers();
+        $('.card').addClass('flipped');
     }
     this.apply_click_handlers = () => {
         $('.mute_button').click(this.mute);
         $('.card').click(controller.handle_card_clicked);
-        $('.card').hover( () => {
+        $('.reset').click(controller.reset_button);
+        $('.card').hover(() => {
             if (!$(this).find('.front').hasClass('hidden')) {
                 $(this).toggleClass("glow");
             }
         });
-        $('#modal_body').click(this.reset_button); 
-        $('.reset').hover( () => {
+        $('#modal_body').click(this.reset_button);
+        $('.reset').hover(() => {
                 if (!$('.reset').attr('disabled')) {
                     $('.reset').addClass('reset_highlight');
                 }
             }, //mouse in
-            function () {
+            () => {
                 $('.reset').removeClass('reset_highlight');
             } //mouse out
         );
@@ -130,7 +134,7 @@ function View(images) {
             $('.attempts').css('color', 'red');
         }
     } //end display stats
-    
+
 }
 
 function Controller(images, sounds) {
@@ -149,9 +153,10 @@ function Controller(images, sounds) {
         $('.accuracy').find(".value").text(0);
     }
 
-    this.handle_card_clicked = function () {
+    this.handle_card_clicked = () => {
         const card = $(event.target).parents('.card');
         const face = card.find('.front').hasClass('hidden');
+        console.log('here')
         if (this.lock || face) {
             return;
         } //end lock check;
@@ -197,8 +202,8 @@ function Controller(images, sounds) {
             } //end else if no match
         } //end second card check
         this.display_stats();
-    }.bind(this); //end cards clicked
-    
+    } //end cards clicked
+
     this.check_win = function () {
         if (this.attempts === 0 && this.matches !== 9) {
             this.display_gg();
@@ -229,28 +234,27 @@ function Controller(images, sounds) {
         } //end else
         return;
     } //end check win
-   
+
     this.start_app = function () {
         view.start_app();
-        view.create_board(images);
-        $('.reset').click(this.reset_button);
-        $('.card').addClass('flipped');
         this.lock = true;
         this.reset_lock = true;
-        $('.reset')
         $('#modal_body').css('background-image', 'url(images/clapping_zerg.gif)');
-        setTimeout(this.start_match, 2000);
+        setTimeout(this.flip_cards, 2000);
         setTimeout(this.lock_delay, 3000);
     } //end start app
-    this.start_match = function () {
+
+    this.flip_cards = function () {
         $('.card').removeClass('flipped');
         view.change_card_height();
     }.bind(this);
+
     this.lock_delay = function () {
         this.lock = false;
         this.reset_lock = false;
         this.toggle_disabled_reset();
     }.bind(this);
+
     this.display_gg = function () {
         $('#modal_body').css("background-image", "url(images/GG.gif)");
         $("#modal_body").css("display", "block");
@@ -258,6 +262,7 @@ function Controller(images, sounds) {
             sounds['rage'].play();
         }
     } //end display gg
+
     this.reset_button = function () {
         if (this.reset_lock === true) {
             return;
@@ -275,6 +280,7 @@ function Controller(images, sounds) {
         this.start_app();
         view.change_card_height();
     }.bind(this) //end reset button
+
     this.reset_cards = function () {
         this.display_stats();
         let card_1 = self.first_card_clicked;
@@ -300,6 +306,7 @@ function Controller(images, sounds) {
         this.second_card_clicked = null;
         this.pair = false;
     }.bind(this); //end reset cards
+
     this.display_accuracy = function () {
         let old_accuracy = this.accuracy;
         this.accuracy = (Math.floor(this.matches / (-(this.attempts - 18)) * 100));
@@ -319,6 +326,7 @@ function Controller(images, sounds) {
             }
         }
     }.bind(this) //end accuracy
+
     this.toggle_disabled_reset = function () {
         let reset_button = $('.reset');
         if (reset_button.attr('disabled')) {
@@ -332,7 +340,7 @@ function Controller(images, sounds) {
     }
 } //end memory_match
 
-function Modal(images,sounds){
+function Modal(images, sounds) {
     this.matches = 0;
     this.attempts = 18;
     this.accuracy = 0;
