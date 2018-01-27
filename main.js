@@ -203,7 +203,7 @@ function Controller(images, sounds) {
                 this.first_card_clicked.find('.back').css('display', 'none');
                 this.second_card_clicked.find('.back').css('display', 'none');
                 const image = this.second_card_clicked.find('img').attr('src');
-                if (!this.is_muted) {
+                if (!modal.is_muted) {
                     modal.sounds[image].play();
                 }
                 this.lock = true;
