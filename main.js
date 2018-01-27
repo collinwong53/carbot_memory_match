@@ -48,7 +48,7 @@ function initialize() {
 //view object 
 function View() {
     this.loaded_images = [];    
-    this.mute = function (modal) {
+    this.mute = () => {
         $('.sound_off, .sound_on').toggleClass('hidden');
         if (!modal.is_muted) {
             for (let audio in modal.sounds) {
@@ -56,7 +56,7 @@ function View() {
             }
         }
         modal.is_muted = !modal.is_muted;
-    }.bind(this);
+    };
 
     this.start_app = () => {
         this.create_board(modal.images);
@@ -84,7 +84,7 @@ function View() {
             } //mouse out
         );
     }
-    this.change_card_height = function () {
+    this.change_card_height = () => {
         let image_height = $('.back img').css('height');
         $(".front img, .back, .card, .front").css('height', image_height);
     }
@@ -94,7 +94,7 @@ function View() {
             this.loaded_images[i].src = image_array[i];
         }
     }
-    this.random_sort = function (image_array) {
+    this.random_sort = (image_array) => {
         let sorted_array = [];
         while (image_array.length > 0) {
             let i = Math.floor(Math.random() * image_array.length);
@@ -102,7 +102,7 @@ function View() {
         } //end inner while
         return sorted_array;
     } //end random_sort
-    this.create_board = function (image_array) {
+    this.create_board = (image_array) => {
         //double the images
         let images = image_array.concat(image_array);
         //randomly sort the images
@@ -124,7 +124,7 @@ function View() {
         } //end for loop
     } //end create board
 
-    this.display_stats = function () {
+    this.display_stats = () => {
         $('.games_played').find('.value').text(modal.games_played);
         $('.attempts').find('.value').text(modal.attempts);
         if (modal.attempts === 10) {
@@ -203,7 +203,7 @@ function Controller(images, sounds) {
             if (this.second_card_clicked.find('img').attr('src') === this.first_card_clicked.find('img').attr('src')) {
                 this.first_card_clicked.find('.back').css('display', 'none');
                 this.second_card_clicked.find('.back').css('display', 'none');
-                var image = this.second_card_clicked.find('img').attr('src');
+                const image = this.second_card_clicked.find('img').attr('src');
                 if (!this.is_muted) {
                     modal.sounds[image].play();
                 }
@@ -234,7 +234,7 @@ function Controller(images, sounds) {
         view.display_stats();
     } //end cards clicked
 
-    this.check_win = function () {
+    this.check_win = () => {
         if (this.attempts === 0 && this.matches !== 9) {
             this.display_gg();
             this.lock = true;
@@ -251,14 +251,15 @@ function Controller(images, sounds) {
             if (this.matches === 9 && this.accuracy < 60) {
                 $("#modal_body").css("background-image", "url(images/balllicking.gif)");
                 $("#modal_body").css("display", "block");
-                if (!this.is_muted) {
-                    this.sounds["zerg_lick"].play();
+                if (!modal.is_muted) {
+                    modal.sounds["zerg_lick"].play();
                 }
             } //end if
-            else if (this.matches === 9) {
+            else if (modal.matches === 9) {
                 $('#modal_body').css("display", "block");
-                if (!this.is_muted) {
-                    this.sounds['clap'].play();
+                $('#modal_body').css('background-image', 'url(images/clapping_zerg.gif)');
+                if (!modal.is_muted) {
+                    modal.sounds['clap'].play();
                 }
             } //end else if
         } //end else
@@ -269,7 +270,6 @@ function Controller(images, sounds) {
         view.start_app();
         this.lock = true;
         this.reset_lock = true;
-        $('#modal_body').css('background-image', 'url(images/clapping_zerg.gif)');
         setTimeout(view.flip_cards, 2000);
         setTimeout(this.lock_delay, 3000);
     } //end start app
