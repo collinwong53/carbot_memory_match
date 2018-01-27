@@ -326,7 +326,7 @@ function Controller(images, sounds) {
 
     this.toggle_disabled_reset = () => {
         let reset_button = $('.reset');
-        if (reset_button.attr('disabled')) {
+        if (!this.reset_lock) {
             reset_button.removeAttr('disabled');
             reset_button.css('background-color', '#35bcfa');
         } else {
