@@ -33,13 +33,13 @@ function initialize() {
     //create game objects
     modal = new Modal(image_array,sound_object);
     view = new View();
-    carBot = new Memory_match();
+    controller = new Controller();
     var images = [];
 
     //preload images
     view.preload_images(image_array);
     setTimeout(function () {
-        carBot.start_app();
+        controller.start_app();
     }.bind(this), 1000);
     $(window).on('resize', view.change_card_height);
     $(window).on('load', view.change_card_height);
@@ -58,19 +58,19 @@ function View(images) {
         }
         modal.is_muted = !modal.is_muted;
     }.bind(this);
-    this.start_app = function () {
+    this.start_app = () => {
         this.apply_click_handlers();
     }
-    this.apply_click_handlers = function (controller) {
+    this.apply_click_handlers = () => {
         $('.mute_button').click(this.mute);
         $('.card').click(controller.handle_card_clicked);
-        $('.card').hover(function () {
+        $('.card').hover( () => {
             if (!$(this).find('.front').hasClass('hidden')) {
                 $(this).toggleClass("glow");
             }
         });
         $('#modal_body').click(this.reset_button); 
-        $('.reset').hover(function () {
+        $('.reset').hover( () => {
                 if (!$('.reset').attr('disabled')) {
                     $('.reset').addClass('reset_highlight');
                 }
@@ -130,9 +130,10 @@ function View(images) {
             $('.attempts').css('color', 'red');
         }
     } //end display stats
+    
 }
 
-function Memory_match(images, sounds) {
+function Controller(images, sounds) {
 
     this.pair = false;
     this.lock = false;
