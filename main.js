@@ -247,7 +247,7 @@ function Controller(images, sounds) {
             $(this.second_card_clicked).find('.front').fadeOut(1500);
             setTimeout(this.reset_cards, 1000);
             this.pair = true;
-            if (modal.matches === 9 && modal.accuracy < 60) {
+            if (modal.matches === 9 && modal.accuracy < 70) {
                 $("#modal_body").css("background-image", "url(images/balllicking.gif)");
                 $("#modal_body").css("display", "block");
                 if (!modal.is_muted) {
