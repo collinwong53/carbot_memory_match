@@ -16,8 +16,8 @@ function initialize() {
     ];
     var sound_object = {
         'images/zeratul.jpg': new Audio("sounds/zeratul_goodjob.mp3"),
-        'images/banelings.jpg': new Audio("sounds/baneling_roll.mp3"),
-        'images/illidan.jpg': new Audio("sounds/not_prepared.mp3"),
+        'images/banelings.jpg': new Audio("sounds/banelings.mp3"),
+        'images/illidan.jpg': new Audio("sounds/illidan.mp3"),
         'images/cuter_baneling.jpg': new Audio("sounds/baneling_burst.mp3"),
         'images/infestor.jpg': new Audio("sounds/infestor_derp.mp3"),
         'images/sky_zerg.jpg': new Audio("sounds/multalisk.mp3"),
