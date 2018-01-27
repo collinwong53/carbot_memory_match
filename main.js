@@ -67,7 +67,7 @@ function View() {
         $('.mute_button').click(this.mute);
         $('.card').click(controller.handle_card_clicked);
         $('.reset').click(controller.handle_reset_button);
-        $('.card').hover(() => {
+        $('.card').hover(function() {
             if (!$(this).find('.front').hasClass('hidden')) {
                 $(this).toggleClass("glow");
             }
@@ -186,7 +186,7 @@ function Controller(images, sounds) {
 
     this.handle_card_clicked = () => {
         const card = $(event.target).parents('.card');
-        const face = card.find('.front').hasClass('hidden');
+        const face = card.hasClass('hidden');
         if (this.lock || face) {
             return;
         } //end lock check;
@@ -235,8 +235,8 @@ function Controller(images, sounds) {
     } //end cards clicked
 
     this.check_win = () => {
-        if (this.attempts === 0 && this.matches !== 9) {
-            this.display_gg();
+        if (modal.attempts === 0 && modal.matches !== 9) {
+            view.display_gg();
             this.lock = true;
             this.reset_lock = true
             setTimeout(this.lock_delay, 1000);
@@ -247,8 +247,8 @@ function Controller(images, sounds) {
             $(this.first_card_clicked).find('.front').fadeOut(1500);
             $(this.second_card_clicked).find('.front').fadeOut(1500);
             setTimeout(this.reset_cards, 1000);
-            self.pair = true;
-            if (this.matches === 9 && this.accuracy < 60) {
+            this.pair = true;
+            if (modal.matches === 9 && modal.accuracy < 60) {
                 $("#modal_body").css("background-image", "url(images/balllicking.gif)");
                 $("#modal_body").css("display", "block");
                 if (!modal.is_muted) {
@@ -300,15 +300,15 @@ function Controller(images, sounds) {
 
     this.reset_cards = () => {
         view.display_stats();
-        let card_1 = this.first_card_clicked;
-        let card_2 = this.second_card_clicked;
+        var card_1 = this.first_card_clicked;
+        var card_2 = this.second_card_clicked;
         if (!this.pair) {
             card_1.removeClass('flipped');
             card_2.removeClass('flipped');
-        } // if no pair
+        } // if not pair
         else {
-            card_1.find('.front').addClass('hidden');
-            card_2.find('.front').addClass('hidden');
+            card_1.addClass('hidden');
+            card_2.addClass('hidden');
             if (card_1.hasClass('glow')) {
                 card_1.removeClass('glow');
             } //disable glow
