@@ -67,22 +67,6 @@ function View() {
         let image_height = $('.back img').css('height');
         $(".front img, .back, .card, .front").css('height', image_height);
     }
-}
-
-function Memory_match(images, sounds) {
-    this.images = images;
-    this.sounds = sounds;
-    this.is_muted = false;
-    const self = this;
-    this.pair = false;
-    this.matches = 0;
-    this.attempts = 18;
-    this.accuracy = 0;
-    this.games_played = 0;
-    this.lock = false;
-    this.reset_lock = false;
-    this.first_card_clicked = null;
-    this.second_card_clicked = null;
     this.random_sort = function (image_array) {
         let sorted_array = [];
         while (image_array.length > 0) {
@@ -112,6 +96,22 @@ function Memory_match(images, sounds) {
             $('<div>').addClass('back').prepend('<img src="images/card_pack.png"/>').appendTo('#card' + i);
         } //end for loop
     } //end create board
+}
+
+function Memory_match(images, sounds) {
+    this.images = images;
+    this.sounds = sounds;
+    this.is_muted = false;
+    const self = this;
+    this.pair = false;
+    this.matches = 0;
+    this.attempts = 18;
+    this.accuracy = 0;
+    this.games_played = 0;
+    this.lock = false;
+    this.reset_lock = false;
+    this.first_card_clicked = null;
+    this.second_card_clicked = null;
     this.reset_stats = function () {
         self.matches = 0;
         self.attempts = 18;
@@ -226,7 +226,7 @@ function Memory_match(images, sounds) {
         }
     } //end display stats
     this.start_app = function () {
-        this.create_board(images);
+        view.create_board(images);
         this.apply_click_handlers();
         $('.reset').click(this.reset_button);
         $('.card').addClass('flipped');
