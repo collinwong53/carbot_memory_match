@@ -46,9 +46,8 @@ function initialize() {
 }
 
 //view object 
-function View(images) {
-    this.loaded_images = [];
-    this.image_array = images;
+function View() {
+    this.loaded_images = [];    
     this.mute = function (modal) {
         $('.sound_off, .sound_on').toggleClass('hidden');
         if (!modal.is_muted) {
@@ -144,17 +143,13 @@ function View(images) {
     this.display_gg = function () {
         $('#modal_body').css("background-image", "url(images/GG.gif)");
         $("#modal_body").css("display", "block");
-        if (!this.is_muted) {
-            sounds['rage'].play();
+        if (!modal.is_muted) {
+            modal.sounds['rage'].play();
         }
     } //end display gg
 
     this.display_accuracy = () => {
-        let old_accuracy = modal.accuracy;
-        this.accuracy = (Math.floor(modal.matches / (-(modal.attempts - 18)) * 100));
-        let increment = setInterval(change_accuracy, 10);
-
-        function change_accuracy() {
+        const change_accuracy = () => {
             if (old_accuracy === modal.accuracy) {
                 clearInterval(increment);
             } else {
@@ -167,6 +162,9 @@ function View(images) {
                 }
             }
         }
+        let old_accuracy = modal.accuracy;
+        modal.accuracy = (Math.floor(modal.matches / (-(modal.attempts - 18)) * 100));
+        let increment = setInterval(change_accuracy, 10);
     } //end accuracy
 }
 
@@ -177,7 +175,7 @@ function Controller(images, sounds) {
     this.reset_lock = false;
     this.first_card_clicked = null;
     this.second_card_clicked = null;
-
+    
     this.reset_stats = function () {
         modal.matches = 0;
         modal.attempts = 18;
@@ -189,7 +187,6 @@ function Controller(images, sounds) {
     this.handle_card_clicked = () => {
         const card = $(event.target).parents('.card');
         const face = card.find('.front').hasClass('hidden');
-        console.log('here')
         if (this.lock || face) {
             return;
         } //end lock check;
@@ -289,10 +286,10 @@ function Controller(images, sounds) {
         } //end if
         this.first_card_clicked = null;
         this.second_card_clicked = null;
+        modal.games_played++;
         this.reset_stats();
         view.display_stats();
         this.toggle_disabled_reset();
-        this.games_played++;
         $('.back').removeAttr('id');
         $('.front').removeAttr('id');
         $('.game_area').html('');
