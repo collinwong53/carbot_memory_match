@@ -13,3 +13,5 @@ Carbot Memory Match is made with a combination of Javascript, ES6, Jquery, HTML5
 
 
 Created in OOP and organized with a Model-View-Controller design pattern.
+
+Utilizes 3 different layouts, depending on screen size and aspect ratio of the clients browser, to enhance mobile responsiveness.
