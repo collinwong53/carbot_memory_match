@@ -9,5 +9,7 @@ Once the player has match 2 cards they will fade out until all pairs have been m
 
 ## Tech
 
-Carbot Memory Match is made with a combination of Javascript, ES6, Jquery, HTML5 and CSS3
+Carbot Memory Match is made with a combination of Javascript, ES6, Jquery, HTML5 and CSS3.
+
+
 Created in OOP and organized with a Model-View-Controller design pattern.
